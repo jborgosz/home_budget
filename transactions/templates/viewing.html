@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    List of movies
+{% endblock %}
+
+{% block content %}
+    <h1>Expenses history</h1>
+    <ul>
+        {% for transaction in object_list %}
+        <li>
+            <a>{{ transaction.name }} ({{ transaction.amount }}) - {{ transaction.transaction_date }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <hr>
+    <a href="{% url 'add_expense' %}" class="btn btn-info">Add new expense</a>
+{% endblock %}

@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from transactions.views import ExpenseCreateView, IncomeCreateView, ExpensesView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('add-expense/', ExpenseCreateView.as_view(), name='add_expense'),
+    path('add-income/', IncomeCreateView.as_view(), name='add_income'),
+    path('expenses/', ExpensesView.as_view(), name='view_expenses')
+
 ]

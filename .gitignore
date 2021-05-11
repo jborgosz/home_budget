@@ -1,6 +1,5 @@
 /venv/
 *.pyc
 .idea/
-*.sqlite3
 *.json
 .env
