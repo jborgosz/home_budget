@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Delete
+        {% if 'expense' in request.path %}
+        expense
+        {% else %}
+        income
+        {% endif %}
+    "{{object.title}}"
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            Are you sure you want to delete "{{object.name}}" from database?
+        </p>
+        <input type="submit" value="Delete" class="btn btn-danger">
+    </form>
+{% endblock %}

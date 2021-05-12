@@ -34,12 +34,15 @@ Add income
       <label for="{{ form.amount.id_for_label}}">Amount:</label> {{ form.amount }}
     </div>
     <div class="row">
+      {% if 'expense' in request.path %}
       <div class="'col">
         <div class="form-group">
           {{ form.category.errors }}
           <label for="{{ form.category.id_for_label }}">Category:</label> {{ form.category }}
         </div>
       </div>
+      {% else %}
+      {% endif %}
       <div class="col">
         <div class="form-group">
           {{ form.transaction_date.errors }}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{object.title}} -
+{% if 'expense' in request.path %}
+expense details
+{% else %}
+income details
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<h1>{{ object.name }}</h1>
+{{ object.category }} - {{ object.transaction_date }}<br>
+<hr>
+<h4>{{ object.description }}</h4>
+<hr>
+{% if object.notes %}
+{{ object.notes}}
+{% endif %}
+<br><br>
+{% if 'expense' in request.path %}
+<a href="{% url 'update_expense' object.id %}" class="btn btn-primary">Edit</a>
+<a href="{% url 'delete_expense' object.id %}" class="btn btn-warning">Delete</a>
+{% else %}
+<a href="{% url 'update_income' object.id %}" class="btn btn-primary">Edit</a>
+<a href="{% url 'delete_income' object.id %}" class="btn btn-warning">Delete</a>
+{% endif %}
+
+{% endblock %}

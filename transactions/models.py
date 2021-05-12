@@ -31,7 +31,6 @@ class Expense(Model):
 class Income(Model):
     name = CharField(max_length=40)
     notes = CharField(max_length=256, blank=True, null=True)
-    category = ForeignKey(TransactionCategory, on_delete=DO_NOTHING)
     amount = FloatField()
     transaction_date = DateField()
 
