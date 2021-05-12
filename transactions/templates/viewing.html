@@ -1,18 +1,40 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    List of movies
+{% if 'expense' in request.path %}
+Expenses history
+{% else %}
+Incomes history
+{% endif %}
 {% endblock %}
 
 {% block content %}
-    <h1>Expenses history</h1>
+    <h1>{% if 'expense' in request.path %}
+        Expenses history
+        {% else %}
+        Incomes history
+        {% endif %}
+    </h1>
+<br>
     <ul>
-        {% for transaction in object_list %}
+        {% if 'expense' in request.path %}
+        {% for object in object_list %}
         <li>
-            <a>{{ transaction.name }} ({{ transaction.amount }}) - {{ transaction.transaction_date }}</a>
+            <a href="{% url 'expense_details' object.id %}">{{ object.name }} ({{ object.amount }}) - {{ object.transaction_date }}</a>
         </li>
         {% endfor %}
+        {% else %}
+        {% for object in object_list %}
+        <li>
+            <a href="{% url 'income_details' object.id %}">{{ object.name }} ({{ object.amount }}) - {{ object.transaction_date }}</a>
+        </li>
+        {% endfor %}
+        {% endif %}
     </ul>
     <hr>
+    {% if 'expense' in request.path %}
     <a href="{% url 'add_expense' %}" class="btn btn-info">Add new expense</a>
+    {% else %}
+    <a href="{% url 'add_income' %}" class="btn btn-info">Add new income</a>
+    {% endif %}
 {% endblock %}

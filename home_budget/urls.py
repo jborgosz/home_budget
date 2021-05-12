@@ -15,12 +15,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from transactions.views import ExpenseCreateView, IncomeCreateView, ExpensesView
+from transactions.views import (ExpenseCreateView,
+                                IncomeCreateView,
+                                ExpensesView,
+                                IncomesView,
+                                IndexView,
+                                ExpenseDetailsView,
+                                IncomeDetailsView,
+                                ExpenseUpdateView,
+                                IncomeUpdateView,
+                                ExpenseDeleteView,
+                                IncomeDeleteView
+                                )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', IndexView.as_view(), name='index'),
+    path('expenses/', ExpensesView.as_view(), name='expenses'),
+    path('incomes/', IncomesView.as_view(), name='incomes'),
     path('add-expense/', ExpenseCreateView.as_view(), name='add_expense'),
     path('add-income/', IncomeCreateView.as_view(), name='add_income'),
-    path('expenses/', ExpensesView.as_view(), name='view_expenses')
+    path('expenses/<int:pk>/', ExpenseDetailsView.as_view(), name='expense_details'),
+    path('incomes/<int:pk>/', IncomeDetailsView.as_view(), name='income_details'),
+    path('update-expense/<int:pk>/', ExpenseUpdateView.as_view(), name='update_expense'),
+    path('update-income/<int:pk>/', IncomeUpdateView.as_view(), name='update_income'),
+    path('delete-expense/<int:pk>/', ExpenseDeleteView.as_view(), name='delete_expense'),
+    path('delete-income/<int:pk>/', IncomeDeleteView.as_view(), name='delete_income'),
 
 ]
