@@ -26,5 +26,6 @@ income details
 <a href="{% url 'update_income' object.id %}" class="btn btn-primary">Edit</a>
 <a href="{% url 'delete_income' object.id %}" class="btn btn-warning">Delete</a>
 {% endif %}
+{% leaflet_map "yourmap" %}
 
 {% endblock %}
