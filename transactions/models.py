@@ -31,6 +31,7 @@ class Expense(Model):
 class Income(Model):
     name = CharField(max_length=40)
     notes = CharField(max_length=256, blank=True, null=True)
+    category = 'Income'
     amount = FloatField()
     transaction_date = DateField()
 
