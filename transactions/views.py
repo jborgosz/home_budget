@@ -20,6 +20,11 @@ class ExpenseCreateView(LoginRequiredMixin, CreateView):
     form_class = ExpenseForm
     success_url = reverse_lazy('expenses')
 
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+
+        return super().form_valid(form)
+
 
 class IncomeCreateView(LoginRequiredMixin, CreateView):
     template_name = 'form.html'
