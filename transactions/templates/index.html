@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Home Budget
+HomeBudget
 {% endblock %}
 
 {% block content %}
 <h1>Welcome to HomeBudget app!</h1>
+<h6>How awesome to see you <a class="font-weight-bold">{% if user.is_authenticated %}{% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}{% endif %}</a>!</h6>
 <br>
+<hr>
+{% if user.is_authenticated %}
 
+Your current budget balance is {{balance}}.
 
-<h6>How awesome to see you!</h6>
-<br>
+<br><hr>
+{% for object in object_list|slice:":10" %}
+<li>
+    <a>{{ object.name }} ({{ object.amount }}) - {{ object.transaction_date }}</a>
+</li>
+{% endfor %}
+{{ page_graph }}
+{% endif %}
 {% endblock %}
