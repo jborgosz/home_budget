@@ -27,9 +27,10 @@ class ExpenseForm(ModelForm):
             visible.field.widget.attrs['class'] = 'form-control'
 
     def clean_notes(self):
-        initial = self.cleaned_data['notes']
-        sentences = re.sub(r'\s*\.\s*', '.', initial).split('.')
-        return '. '.join(sentence.capitalize() for sentence in sentences)
+        if self.cleaned_data['notes']:
+            initial = self.cleaned_data['notes']
+            sentences = re.sub(r'\s*\.\s*', '.', initial).split('.')
+            return '. '.join(sentence.capitalize() for sentence in sentences)
 
 
 class IncomeForm(ModelForm):
@@ -46,7 +47,8 @@ class IncomeForm(ModelForm):
             visible.field.widget.attrs['class'] = 'form-control'
 
     def clean_notes(self):
-        initial = self.cleaned_data['notes']
-        sentences = re.sub(r'\s*\.\s*', '.', initial).split('.')
-        return '. '.join(sentence.capitalize() for sentence in sentences)
+        if self.cleaned_data['notes']:
+            initial = self.cleaned_data['notes']
+            sentences = re.sub(r'\s*\.\s*', '.', initial).split('.')
+            return '. '.join(sentence.capitalize() for sentence in sentences)
 
