@@ -19,6 +19,15 @@ Your current budget balance is {{balance}}.
     <a>{{ object.name }} ({{ object.amount }}) - {{ object.transaction_date }}</a>
 </li>
 {% endfor %}
-{{ page_graph }}
+<br>
+<div class="row">
+  <div class="'col">
+      {{ expenses_graph|safe }}
+  </div>
+  <div class="col">
+      {{ expenses_pie|safe }}
+  </div>
+</div>
+
 {% endif %}
 {% endblock %}

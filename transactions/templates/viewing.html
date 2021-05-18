@@ -23,6 +23,8 @@ Incomes history
             <a href="{% url 'expense_details' object.id %}">{{ object.name }} ({{ object.amount }}) - {{ object.transaction_date }}</a>
         </li>
         {% endfor %}
+        <br>
+        {{ pie_chart|safe }}
         {% else %}
         {% for object in object_list %}
         <li>
