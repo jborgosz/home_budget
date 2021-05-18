@@ -80,6 +80,7 @@ class IndexView(ListView):
         queryset = list(reversed(sorted(chain(expenses, incomes), key=attrgetter('transaction_date'))))
         return queryset
 
+
 class ExpenseCreateView(LoginRequiredMixin, CreateView):
     template_name = 'form.html'
     form_class = ExpenseForm
