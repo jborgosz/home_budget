@@ -22,38 +22,77 @@ Add income
 <h2>Add income</h2>
 <br>
 {% endif %}
-  <form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="form-group">
-      {{ form.name.errors }}
-      <label for="{{ form.name.id_for_label}}">Name:</label> {{ form.name }}
+        {{ form.name.errors }}
+        <label for="{{ form.name.id_for_label}}">Name:</label> {{ form.name }}
     </div>
     <div class="form-group">
-      {{ form.amount.errors }}
-      <label for="{{ form.amount.id_for_label}}">Amount:</label> {{ form.amount }}
+        {{ form.amount.errors }}
+        <label for="{{ form.amount.id_for_label}}">Amount:</label> {{ form.amount }}
     </div>
     <div class="row">
-      {% if 'expense' in request.path %}
-      <div class="'col">
-        <div class="form-group">
-          {{ form.category.errors }}
-          <label for="{{ form.category.id_for_label }}">Category:</label> {{ form.category }}
+        {% if 'expense' in request.path %}
+        <div class="'col">
+            <div class="form-group">
+                {{ form.category.errors }}
+                <label for="{{ form.category.id_for_label }}">Category:</label> {{ form.category }}
+            </div>
         </div>
-      </div>
-      {% else %}
-      {% endif %}
-      <div class="col">
-        <div class="form-group">
-          {{ form.transaction_date.errors }}
-          <label for="{{ form.transaction_date.id_for_label }}">Transaction date:</label> {{ form.transaction_date }}
+        {% else %}
+        {% endif %}
+        <div class="col">
+            <div class="form-group">
+                {{ form.transaction_date.errors }}
+                <label for="{{ form.transaction_date.id_for_label }}">Transaction date:</label> {{ form.transaction_date }}
+            </div>
         </div>
-      </div>
     </div>
     <div class="form-group">
-      {{ form.notes.errors }}
-      <label for="{{ form.notes.id_for_label }}">Notes:</label> {{ form.notes }}
+        {{ form.notes.errors }}
+        <label for="{{ form.notes.id_for_label }}">Notes:</label> {{ form.notes }}
+    </div>
+
+
+<div id="mapid">
+</div>
+    <style>#mapid { height: 360px; }</style>
+    <script>
+    var mymap = L.map('mapid').setView([52, 21], 13);
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoiZHJhY2hhbCIsImEiOiJja29zcW1qenkwNDI2MnVsazFwYXY4b3BxIn0.k5igjjFEHozuYAy5b07ITg'
+}).addTo(mymap);
+var popup = L.popup();
+function onMapClick(e) {
+ popup
+ .setLatLng(e.latlng)
+ .setContent(e.latlng.lat + ', ' + e.latlng.lng)
+ .openOn(mymap);
+ document.getElementById('coordy').value = e.latlng.lat + ', ' + e.latlng.lng;
+  }
+mymap.on('click', onMapClick);
+
+    </script>
+
+    <input type="text" id="coordy" />
+
+        <div class="form-group">
+        {{ form.lat.errors }}
+        <label for="{{ form.lat.id_for_label }}">Coordinates:</label> {{ form.lat }}
+    </div>
+    <div class="form-group">
+        {{ form.lon.errors }}
+        <label for="{{ form.lon.id_for_label }}">Coordinates:</label> {{ form.lon }}
     </div>
     <input type="submit" value="Submit" class="btn btn-primary">
-  </form>
+
+</form>
+
 {% endblock %}

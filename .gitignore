@@ -3,3 +3,4 @@
 .idea/
 *.json
 .env
+db.sqlite3

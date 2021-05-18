@@ -20,6 +20,9 @@ class Expense(Model):
     category = ForeignKey(TransactionCategory, on_delete=DO_NOTHING)
     amount = FloatField()
     transaction_date = DateField()
+    lat = FloatField(null=True, blank=True, default=51)
+    lon = FloatField(null=True, blank=True, default=22)
+
 
     def __str__(self):
         return f'{self.transaction_date} -- {self.amount} -- {self.name}'
