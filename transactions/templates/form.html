@@ -75,22 +75,18 @@ function onMapClick(e) {
  .setLatLng(e.latlng)
  .setContent(e.latlng.lat + ', ' + e.latlng.lng)
  .openOn(mymap);
- document.getElementById('coordy').value = e.latlng.lat + ', ' + e.latlng.lng;
+ document.getElementById('coord1').value = e.latlng.lat
+ document.getElementById('coord2').value = e.latlng.lng;
   }
 mymap.on('click', onMapClick);
 
+
     </script>
 
-    <input type="text" id="coordy" />
+    <input type="hidden" id="coord1" value={{form.lat}}
 
-        <div class="form-group">
-        {{ form.lat.errors }}
-        <label for="{{ form.lat.id_for_label }}">Coordinates:</label> {{ form.lat }}
-    </div>
-    <div class="form-group">
-        {{ form.lon.errors }}
-        <label for="{{ form.lon.id_for_label }}">Coordinates:</label> {{ form.lon }}
-    </div>
+    <input type="hidden" id="coord2" value={{form.lon}}
+
     <input type="submit" value="Submit" class="btn btn-primary">
 
 </form>
