@@ -31,19 +31,18 @@ def balance_amount():
 
 
 def index_bar_graph():
-    pass
-    # categories = [x.category.name for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)]
-    # amounts = [x.amount for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)]
-    #
-    # fig = px.bar(categories,
-    #              # x=categories,
-    #              # y=amounts,
-    #              labels={'x': 'Categories',
-    #                      'y': 'Amounts'},
-    #              title='Expenses by categories (last month)',
-    #              )
-    # graph = fig.to_html(full_html=False, default_height=400)
-    # return graph
+    categories = [x.category.name for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)]
+    amounts = [x.amount for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)]
+
+    fig = px.bar(categories,
+                 x=categories,
+                 y=amounts,
+                 labels={'x': 'Categories',
+                         'y': 'Amounts'},
+                 title='Expenses by categories (last month)',
+                 )
+    graph = fig.to_html(full_html=False, default_height=400)
+    return graph
 
 
 def index_pie_graph():

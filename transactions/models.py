@@ -5,7 +5,6 @@ from django.db.models import Model, CharField, ForeignKey, DO_NOTHING, FloatFiel
 
 class TransactionCategory(Model):
     name = CharField(max_length=40)
-    income_expense = BooleanField()
 
     def __str__(self):
         return f'{self.name}'
@@ -22,7 +21,6 @@ class Expense(Model):
     transaction_date = DateField()
     lat = FloatField(null=True, blank=True, default=51)
     lon = FloatField(null=True, blank=True, default=22)
-
 
     def __str__(self):
         return f'{self.transaction_date} -- {self.amount} -- {self.name}'
