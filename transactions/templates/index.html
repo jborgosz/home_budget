@@ -11,7 +11,7 @@ HomeBudget
 <hr>
 {% if user.is_authenticated %}
 
-Your current budget balance is {{balance}}.
+Your current budget balance is {{ balance|floatformat:2 }}.
 
 <br><hr>
 {% for object in object_list|slice:":10" %}
@@ -27,6 +27,17 @@ Your current budget balance is {{balance}}.
   <div class="col">
       {{ expenses_pie|safe }}
   </div>
+</div>
+<br>
+<hr>
+<br>
+<div class="row">
+  <div class="'col">
+      {{ expenses_graph_last_month|safe }}
+  </div>
+<!--  <div class="col">-->
+<!--      {{ expenses_pie|safe }}-->
+<!--  </div>-->
 </div>
 
 {% endif %}

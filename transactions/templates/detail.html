@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{object.name}} -
+{{object.name}} -
 {% if 'expense' in request.path %}
 expense details
 {% else %}
@@ -11,6 +11,9 @@ income details
 
 {% block content %}
 <h1>{{ object.name }}</h1>
+<br>
+<h3>{{ object.amount|floatformat:2 }}</h3>
+<br>
 {{ object.category }} - {{ object.transaction_date }}<br>
 <hr>
 <h4>{{ object.description }}</h4>
@@ -18,10 +21,13 @@ income details
 {% if object.notes %}
 {{ object.notes}}
 {% endif %}
+
+
+{% if 'expense' in request.path %}
 <div id="mapid">
 </div>
-    <style>#mapid { height: 700px; }</style>
-    <script>
+<style>#mapid { height: 700px; }</style>
+<script>
     var mymap = L.map('mapid').setView([{{object.lat}}, {{object.lon}}], 13);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -34,6 +40,8 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 L.marker([{{object.lat}}, {{object.lon}}]).addTo(mymap)
     .bindPopup('{{object.lat}}, {{object.lon}}').openPopup();
 </script>
+{% endif %}
+
 <br><br>
 {% if 'expense' in request.path %}
 <a href="{% url 'update_expense' object.id %}" class="btn btn-primary">Edit</a>

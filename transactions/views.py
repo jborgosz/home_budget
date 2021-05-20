@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView, DeleteView, DetailView
 from transactions.forms import ExpenseForm, IncomeForm
 from transactions.models import Expense, Income
-from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 import plotly.express as px
 import pandas as pd
@@ -45,6 +45,26 @@ def index_bar_graph():
     return graph
 
 
+def index_bar_graph_last_month():
+    amounts_last_two_months = Expense.objects.filter(transaction_date__month__gte=dt.today().month-1).values('transaction_date__month').annotate(sum=Sum('amount'))
+    months_listed = [x['transaction_date__month'] for x in list(Expense.objects.values('transaction_date__month').annotate(sum=Sum('amount')))]
+    if dt.today().month-1 in months_listed:
+        months = [dt.today().month-1, dt.today().month]
+        amounts = [x['sum'] for x in amounts_last_two_months]
+
+        fig = px.bar(months,
+                     x=months,
+                     y=amounts,
+                     labels={'x': 'Months',
+                             'y': 'Amounts'},
+                     title='Expenses comparison to last month',
+                     )
+        graph = fig.to_html(full_html=False, default_height=400)
+        return graph
+    else:
+        return 'Nothing to show here - no expenses in previous month!'
+
+
 def index_pie_graph():
 
     categories = [x.category.name for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)]
@@ -71,7 +91,10 @@ def expenses_pie_graph():
 
 class IndexView(ListView):
     template_name = 'index.html'
-    extra_context = {'balance': balance_amount, 'expenses_graph': index_bar_graph(), 'expenses_pie': index_pie_graph()}
+    extra_context = {'balance': balance_amount,
+                     'expenses_graph': index_bar_graph(),
+                     'expenses_pie': index_pie_graph(),
+                     'expenses_graph_last_month': index_bar_graph_last_month(),}
 
     def get_queryset(self):
         expenses = Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)
@@ -100,6 +123,7 @@ class IncomeCreateView(LoginRequiredMixin, CreateView):
 class ExpensesView(LoginRequiredMixin, ListView):
     template_name = 'viewing.html'
     model = Expense
+    ordering = ['-transaction_date']
     paginate_by = 20
     extra_context = {'pie_chart': expenses_pie_graph()}
 
@@ -107,6 +131,7 @@ class ExpensesView(LoginRequiredMixin, ListView):
 class IncomesView(LoginRequiredMixin, ListView):
     template_name = 'viewing.html'
     model = Income
+    ordering = ['-transaction_date']
     paginate_by = 20
 
 

@@ -55,9 +55,9 @@ Add income
         <label for="{{ form.notes.id_for_label }}">Notes:</label> {{ form.notes }}
     </div>
 
-
-<div id="mapid">
-</div>
+    {% if 'expense' in request.path %}
+    <div id="mapid">
+    </div>
     <style>#mapid { height: 360px; }</style>
     <script>
     var mymap = L.map('mapid').setView([52, 22], 13);
@@ -87,6 +87,8 @@ mymap.on('click', onMapClick);
 
     <input type="hidden" id="coord2" value={{form.lon}}
 
+    {% endif %}
+    <br>
     <input type="submit" value="Submit" class="btn btn-primary">
 
 </form>
