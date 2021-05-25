@@ -118,8 +118,7 @@ class ExpenseCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('expenses')
 
     def form_valid(self, form):
-        cleaned_data = form.cleaned_data
-
+        form.instance.user_id = self.request.user.id
         return super().form_valid(form)
 
 
