@@ -127,6 +127,10 @@ class IncomeCreateView(LoginRequiredMixin, CreateView):
     form_class = IncomeForm
     success_url = reverse_lazy('incomes')
 
+    def form_valid(self, form):
+        form.instance.user_id = self.request.user.id
+        return super().form_valid(form)
+
 
 class ExpensesView(LoginRequiredMixin, ListView):
     template_name = 'viewing.html'
@@ -145,6 +149,10 @@ class IncomesView(LoginRequiredMixin, ListView):
     model = Income
     ordering = ['-transaction_date']
     paginate_by = 20
+
+    def get_queryset(self):
+        queryset = Expense.objects.filter(user_id=self.request.user)
+        return queryset
 
 
 class ExpenseDetailsView(LoginRequiredMixin, DetailView):

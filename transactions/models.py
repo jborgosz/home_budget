@@ -20,6 +20,7 @@ class Income(Model):
     category = 'Income'
     amount = FloatField()
     transaction_date = DateField()
+    user = ForeignKey(User, editable=False, on_delete=DO_NOTHING)
 
     def __str__(self):
         return f'{self.transaction_date} -- {self.amount} -- {self.name}'
