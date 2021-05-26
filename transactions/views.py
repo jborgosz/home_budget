@@ -2,10 +2,8 @@ from datetime import datetime as dt
 from itertools import chain
 from operator import attrgetter
 from logging import getLogger
-from django.contrib.auth.models import User
-from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, TemplateView, UpdateView, DeleteView, DetailView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from transactions.forms import ExpenseForm, IncomeForm
 from transactions.models import Expense, Income
 from django.db.models import Count, Sum
@@ -17,9 +15,9 @@ import pandas as pd
 LOGGER = getLogger()
 
 
-def balance_amount():
-    expenses = Expense.objects.all()
-    incomes = Income.objects.all()
+def balance_amount(user):
+    expenses = Expense.objects.filter(user_id=user)
+    incomes = Income.objects.filter(user_id=user)
     result = 0
 
     for transaction in incomes:
@@ -31,84 +29,106 @@ def balance_amount():
     return result
 
 
-def index_bar_graph():
-    pass
-    # categories = [x.category.name for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)]
-    # amounts = [x.amount for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)]
-    #
-    # fig = px.bar(categories,
-    #              x=categories,
-    #              y=amounts,
-    #              labels={'x': 'Categories',
-    #                      'y': 'Amounts'},
-    #              title='Expenses by categories (last month)',
-    #              )
-    # graph = fig.to_html(full_html=False, default_height=400)
-    # return graph
+def index_bar_graph(user):
+    # pass
+    categories = [x.category.name for x in
+                  Expense.objects.filter(user_id=user).filter(transaction_date__day__gte=dt.today().day - 31)]
+    amounts = [x.amount for x in
+               Expense.objects.filter(user_id=user).filter(transaction_date__day__gte=dt.today().day - 31)]
+    if amounts and categories:
+        fig = px.bar(categories,
+                     x=categories,
+                     y=amounts,
+                     labels={'x': 'Categories',
+                             'y': 'Amounts'},
+                     title='Expenses by categories (last 30 days)',
+                     )
+        graph = fig.to_html(full_html=False, default_height=400)
+        return graph
+
+    else:
+        return 'No expenses added'
 
 
-def index_bar_graph_last_month():
-    pass
-    # amounts_last_two_months = Expense.objects.filter(transaction_date__month__gte=dt.today().month-1).values('transaction_date__month').annotate(sum=Sum('amount'))
-    # months_listed = [x['transaction_date__month'] for x in list(Expense.objects.values('transaction_date__month').annotate(sum=Sum('amount')))]
-    # if dt.today().month-1 in months_listed:
-    #     months = [dt.today().month-1, dt.today().month]
-    #     amounts = [x['sum'] for x in amounts_last_two_months]
-    #
-    #     fig = px.bar(months,
-    #                  x=months,
-    #                  y=amounts,
-    #                  labels={'x': 'Months',
-    #                          'y': 'Amounts'},
-    #                  title='Expenses comparison to last month',
-    #                  )
-    #     graph = fig.to_html(full_html=False, default_height=400)
-    #     return graph
-    # else:
-    #     return 'Nothing to show here - no expenses in previous month!'
+def index_bar_graph_last_month(user):
+    # pass
+    amounts_last_two_months = Expense.objects.filter(user_id=user).filter(
+        transaction_date__month__gte=dt.today().month - 1).values(
+        'transaction_date__month').annotate(sum=Sum('amount'))
+    months_listed = [x['transaction_date__month'] for x in
+                     list(Expense.objects.filter(user_id=user).values('transaction_date__month').annotate(
+                         sum=Sum('amount')))]
+    if dt.today().month - 1 in months_listed and dt.today().month in months_listed:
+        months = [dt.today().month - 1, dt.today().month]
+        amounts = [x['sum'] for x in amounts_last_two_months]
+
+        fig = px.bar(months,
+                     x=months,
+                     y=amounts,
+                     labels={'x': 'Months',
+                             'y': 'Amounts'},
+                     title='Expenses comparison to last month',
+                     )
+        graph = fig.to_html(full_html=False, default_height=400)
+        return graph
+    else:
+        return 'Nothing to show here - no expenses in current and/or previous month!'
 
 
-def index_pie_graph():
-    pass
-    # categories = [x.category.name for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)]
-    # amounts = [x.amount for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)]
-    # data = {x.name: x.amount for x in Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)}
-    # df = pd.DataFrame(data, index=[0])
-    #
-    # fig = px.pie(df, names=categories, values=amounts)
-    # graph = fig.to_html(full_html=False, default_height=400)
-    # return graph
+def index_pie_graph(user):
+    # pass
+    categories = [x.category.name for x in
+                  Expense.objects.filter(user_id=user).filter(transaction_date__day__gte=dt.today().day - 31)]
+    amounts = [x.amount for x in
+               Expense.objects.filter(user_id=user).filter(transaction_date__day__gte=dt.today().day - 31)]
+    data = {x.name: x.amount for x in
+            Expense.objects.filter(user_id=user).filter(transaction_date__day__gte=dt.today().day - 31)}
+    df = pd.DataFrame(data, index=[0])
+    if categories and amounts and data:
+        fig = px.pie(df, names=categories, values=amounts)
+        graph = fig.to_html(full_html=False, default_height=400)
+        return graph
+    else:
+        return ''
 
 
-def expenses_pie_graph():
-    pass
-    # categories = [x.category.name for x in Expense.objects.all()]
-    # amounts = [x.amount for x in Expense.objects.all()]
-    # data = {x.name: x.amount for x in Expense.objects.all()}
-    # df = pd.DataFrame(data, index=[0])
-    #
-    # fig = px.pie(df, names=categories, values=amounts)
-    # graph = fig.to_html(full_html=False, default_height=500)
-    # return graph
+def expenses_pie_graph(user):
+    # pass
+    categories = [x.category.name for x in Expense.objects.filter(user_id=user).all()]
+    amounts = [x.amount for x in Expense.objects.filter(user_id=user).all()]
+    data = {x.name: x.amount for x in Expense.objects.filter(user_id=user).all()}
+    df = pd.DataFrame(data, index=[0])
+    if categories and amounts and data:
+        fig = px.pie(df, names=categories, values=amounts)
+        graph = fig.to_html(full_html=False, default_height=500)
+        return graph
+    else:
+        return 'Nothing to show yet. Start adding expenses.'
 
 
 class IndexView(ListView):
     template_name = 'index.html'
     extra_context = {'balance': balance_amount,
-                     'expenses_graph': index_bar_graph(),
-                     'expenses_pie': index_pie_graph(),
-                     'expenses_graph_last_month': index_bar_graph_last_month(),}
+                     'expenses_graph': index_bar_graph,
+                     'expenses_pie': index_pie_graph,
+                     'expenses_graph_last_month': index_bar_graph_last_month, }
 
     def get_queryset(self):
-        expenses = Expense.objects.filter(transaction_date__day__gte=dt.today().day - 31)
-        incomes = Income.objects.filter(transaction_date__day__gte=dt.today().day - 31)
-        queryset = list(reversed(sorted(chain(expenses, incomes), key=attrgetter('transaction_date'))))
-        return queryset
+        if self.request.user.is_authenticated:
+            expenses = Expense.objects.filter(user_id=self.request.user).filter(
+                transaction_date__day__gte=dt.today().day - 31)
+            incomes = Income.objects.filter(user_id=self.request.user).filter(
+                transaction_date__day__gte=dt.today().day - 31)
+            queryset = list(reversed(sorted(chain(expenses, incomes), key=attrgetter('transaction_date'))))
+            return queryset
 
     def dispatch(self, request, *args, **kwargs):
-        self.extra_context['expenses_graph'] = index_bar_graph()
-        self.extra_context['expenses_pie'] = index_pie_graph()
-        self.extra_context['expenses_graph_last_month'] = index_bar_graph_last_month()
+        if request.user.is_authenticated:
+            current_user = request.user
+            self.extra_context['balance'] = balance_amount(current_user)
+            self.extra_context['expenses_graph'] = index_bar_graph(current_user)
+            self.extra_context['expenses_pie'] = index_pie_graph(current_user)
+            self.extra_context['expenses_graph_last_month'] = index_bar_graph_last_month(current_user)
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -135,13 +155,18 @@ class IncomeCreateView(LoginRequiredMixin, CreateView):
 class ExpensesView(LoginRequiredMixin, ListView):
     template_name = 'viewing.html'
     model = Expense
-    ordering = ['-transaction_date']
     paginate_by = 20
-    extra_context = {'pie_chart': expenses_pie_graph()}
+    ordering = ['-transaction_date']
+    extra_context = {'pie_chart': expenses_pie_graph}
 
     def get_queryset(self):
-        queryset = Expense.objects.filter(user_id=self.request.user)
+        queryset = list(Expense.objects.filter(user_id=self.request.user))
         return queryset
+
+    def dispatch(self, request, *args, **kwargs):
+        current_user = request.user
+        self.extra_context['pie_chart'] = expenses_pie_graph(current_user)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class IncomesView(LoginRequiredMixin, ListView):
@@ -151,7 +176,7 @@ class IncomesView(LoginRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        queryset = Expense.objects.filter(user_id=self.request.user)
+        queryset = Income.objects.filter(user_id=self.request.user)
         return queryset
 
 
