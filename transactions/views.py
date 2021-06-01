@@ -2,6 +2,7 @@ from datetime import datetime as dt
 from itertools import chain
 from operator import attrgetter
 from logging import getLogger
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from transactions.forms import ExpenseForm, IncomeForm
